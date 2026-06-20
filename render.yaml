@@ -1,0 +1,22 @@
+services:
+  - type: web
+    name: smartpay-backend
+    env: java
+    buildCommand: cd backend && mvn clean package -DskipTests
+    startCommand: java -jar backend/target/smartpay-backend-1.0.0.jar
+    envVars:
+      - key: PORT
+        value: 8765
+      - key: MONGODB_URI
+        sync: false
+      - key: JWT_SECRET
+        sync: false
+
+  - type: web
+    name: smartpay-frontend
+    env: static
+    buildCommand: cd frontend && npm install && npm run build
+    staticPublishPath: frontend/dist
+    envVars:
+      - key: VITE_API_URL
+        sync: false
