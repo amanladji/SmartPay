@@ -1,0 +1,13 @@
+server:
+  port: 8765
+
+spring:
+  data:
+    mongodb:
+      uri: mongodb+srv://amanahmed12347_db_user:wN3EuooInYexqQfX@cluster0.opqmhtw.mongodb.net/smartpay?retryWrites=true&w=majority&appName=Cluster0&socketTimeoutMS=5000&connectTimeoutMS=5000&maxIdleTimeMS=120000&minPoolSize=1&waitQueueTimeoutMS=5000
+      auto-index-creation: false
+
+app:
+  jwt:
+    secret: 4a6f686e446f6553656372657456657279566572795365637265744b6579466f724a5754436f6d70616e79496e32303234
+    expiration: 86400000
