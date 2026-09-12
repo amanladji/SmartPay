@@ -35,6 +35,8 @@ public class User {
 
     private String password;
 
+    private String upiPin;
+
     @Builder.Default
     private Role role = Role.USER;
 

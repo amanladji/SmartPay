@@ -27,8 +27,11 @@ public class PaymentService {
     private final UserRepository userRepository;
     private final WalletRepository walletRepository;
     private final TransactionRepository transactionRepository;
+    private final UserService userService;
 
     public TransactionResponse transferMoney(String senderEmail, TransferRequest request) {
+        userService.verifyPin(senderEmail, request.getUpiPin());
+
         User sender = userRepository.findByEmail(senderEmail)
                 .orElseThrow(() -> new ResourceNotFoundException("Sender not found"));
         User receiver = userRepository.findByUpiId(request.getReceiverUpiId())
@@ -74,8 +77,8 @@ public class PaymentService {
         transactionRepository.save(debitTxn);
 
         Transaction creditTxn = Transaction.builder()
-                .senderUpiId(sender.getUpiId())
-                .receiverUpiId(receiver.getUpiId())
+                .senderUpiId(receiver.getUpiId())
+                .receiverUpiId(sender.getUpiId())
                 .amount(request.getAmount())
                 .type(TransactionType.CREDIT)
                 .status(TransactionStatus.SUCCESS)

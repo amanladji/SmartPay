@@ -2,11 +2,11 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import api from '../api/axios';
-import { Send, Plus, ArrowUp, ArrowDown } from 'lucide-react';
+import { Send, Plus, ArrowUp, ArrowDown, ShieldCheck } from 'lucide-react';
 import LoadingSpinner from '../components/LoadingSpinner';
 
 export default function Dashboard() {
-  const { user } = useAuth();
+  const { user, pinSet } = useAuth();
   const navigate = useNavigate();
   const [wallet, setWallet] = useState(null);
   const [transactions, setTransactions] = useState([]);
@@ -40,6 +40,25 @@ export default function Dashboard() {
           UPI ID: <strong style={{ color: 'var(--color-midnight)' }}>{wallet?.upiId || '—'}</strong>
         </p>
       </div>
+
+      {!pinSet && (
+        <div className="card" style={{
+          border: '2px solid var(--color-cerulean-surge)', marginBottom: 24,
+          display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+          padding: '16px 24px',
+        }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+            <ShieldCheck size={24} style={{ color: 'var(--color-midnight)' }} />
+            <div>
+              <p className="body-text" style={{ fontWeight: 600 }}>Set your UPI PIN</p>
+              <p className="body-small" style={{ color: 'var(--color-ash)' }}>Secure your transactions with a 4-6 digit PIN</p>
+            </div>
+          </div>
+          <button className="ghost-pill ghost-pill--dark" onClick={() => navigate('/set-pin')} style={{ fontSize: 13, padding: '8px 20px', whiteSpace: 'nowrap' }}>
+            Set PIN
+          </button>
+        </div>
+      )}
 
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 24, marginBottom: 48 }}>
         <div className="card--navy card" style={{ padding: 32, borderRadius: 'var(--radius-cards)' }}>

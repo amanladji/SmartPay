@@ -14,4 +14,5 @@ public class UserProfileResponse {
     private String phone;
     private String upiId;
     private String createdAt;
+    private boolean pinSet;
 }

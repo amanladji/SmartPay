@@ -1,14 +1,18 @@
 import { useState } from 'react';
 import api from '../api/axios';
 import { useAuth } from '../context/AuthContext';
-import { Send, CheckCircle } from 'lucide-react';
+import { Send, CheckCircle, ShieldCheck, Eye, EyeOff, X } from 'lucide-react';
 import toast from 'react-hot-toast';
 
 export default function SendMoney() {
-  const { user } = useAuth();
+  const { user, pinSet } = useAuth();
   const [form, setForm] = useState({ receiverUpiId: '', amount: '', description: '' });
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(null);
+  const [showPinDialog, setShowPinDialog] = useState(false);
+  const [upiPin, setUpiPin] = useState('');
+  const [showPin, setShowPin] = useState(false);
+  const [pinLoading, setPinLoading] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -16,19 +20,34 @@ export default function SendMoney() {
       toast.error('Cannot send money to yourself', { className: 'toast-error' });
       return;
     }
-    setLoading(true);
+    if (!pinSet) {
+      toast.error('Please set your UPI PIN first from Profile', { className: 'toast-error' });
+      return;
+    }
+    setShowPinDialog(true);
+  };
+
+  const handlePinSubmit = async () => {
+    if (!upiPin || upiPin.length < 4) {
+      toast.error('Enter a valid 4-6 digit PIN', { className: 'toast-error' });
+      return;
+    }
+    setPinLoading(true);
     try {
       const res = await api.post('/payments/transfer', {
         receiverUpiId: form.receiverUpiId,
         amount: parseFloat(form.amount),
         description: form.description || 'Payment',
+        upiPin: upiPin,
       });
       setSuccess(res.data.data);
+      setShowPinDialog(false);
+      setUpiPin('');
       toast.success('Payment sent successfully!', { className: 'toast-success' });
     } catch (err) {
       toast.error(err.response?.data?.message || 'Transfer failed', { className: 'toast-error' });
     } finally {
-      setLoading(false);
+      setPinLoading(false);
     }
   };
 
@@ -109,6 +128,52 @@ export default function SendMoney() {
           {loading ? <div className="spinner" style={{ width: 20, height: 20 }} /> : <><Send size={18} /> Send ₹{form.amount || '0'}</>}
         </button>
       </form>
+
+      {showPinDialog && (
+        <div style={{
+          position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)',
+          display: 'flex', alignItems: 'center', justifyContent: 'center',
+          zIndex: 1000, padding: 16,
+        }} onClick={() => { setShowPinDialog(false); setUpiPin(''); }}>
+          <div className="card fade-in" style={{ maxWidth: 380, width: '100%', padding: 32 }} onClick={(e) => e.stopPropagation()}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20 }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                <ShieldCheck size={20} style={{ color: 'var(--color-midnight)' }} />
+                <span className="subheading">Enter UPI PIN</span>
+              </div>
+              <button onClick={() => { setShowPinDialog(false); setUpiPin(''); }} style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--color-ash)' }}>
+                <X size={20} />
+              </button>
+            </div>
+            <p className="body-small" style={{ color: 'var(--color-ash)', marginBottom: 16 }}>
+              Paying ₹{Number(form.amount).toLocaleString('en-IN', { minimumFractionDigits: 2 })} to {form.receiverUpiId}
+            </p>
+            <div style={{ marginBottom: 20, position: 'relative' }}>
+              <input
+                className="form-input"
+                type={showPin ? 'text' : 'password'}
+                inputMode="numeric"
+                pattern="[0-9]*"
+                maxLength={6}
+                value={upiPin}
+                onChange={(e) => setUpiPin(e.target.value.replace(/\D/g, ''))}
+                placeholder="Enter your UPI PIN"
+                style={{ fontSize: 24, letterSpacing: 8, textAlign: 'center' }}
+                autoFocus
+              />
+              <button type="button" onClick={() => setShowPin(!showPin)} style={{
+                position: 'absolute', right: 12, top: '50%', transform: 'translateY(-50%)',
+                background: 'none', border: 'none', cursor: 'pointer', color: 'var(--color-ash)',
+              }}>
+                {showPin ? <EyeOff size={18} /> : <Eye size={18} />}
+              </button>
+            </div>
+            <button className="ghost-pill ghost-pill--solid" style={{ width: '100%', padding: '14px', fontSize: 15 }} disabled={pinLoading} onClick={handlePinSubmit}>
+              {pinLoading ? <div className="spinner" style={{ width: 20, height: 20 }} /> : 'Pay Now'}
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

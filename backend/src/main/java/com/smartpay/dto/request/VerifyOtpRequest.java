@@ -1,19 +1,19 @@
 package com.smartpay.dto.request;
 
-import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 
 @Data
-public class LoginRequest {
+public class VerifyOtpRequest {
     @NotBlank(message = "Email is required")
-    @Email(message = "Invalid email format")
     private String email;
 
-    @NotBlank(message = "Password is required")
-    private String password;
+    @NotBlank(message = "OTP is required")
+    private String otp;
 
+    @NotBlank(message = "Device ID is required")
     private String deviceId;
 
+    @NotBlank(message = "Device name is required")
     private String deviceName;
 }

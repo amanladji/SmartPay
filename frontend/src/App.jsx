@@ -6,12 +6,15 @@ import Layout from './components/Layout';
 
 import Login from './pages/Login';
 import Register from './pages/Register';
+import OtpVerification from './pages/OtpVerification';
 import Dashboard from './pages/Dashboard';
 import SendMoney from './pages/SendMoney';
 import Transactions from './pages/Transactions';
 import WalletPage from './pages/Wallet';
 import Profile from './pages/Profile';
 import QRPayment from './pages/QRPayment';
+import SetUpiPin from './pages/SetUpiPin';
+import Sessions from './pages/Sessions';
 import NotFound from './pages/NotFound';
 
 export default function App() {
@@ -28,6 +31,7 @@ export default function App() {
         <Routes>
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
+          <Route path="/verify-otp" element={<OtpVerification />} />
           <Route path="*" element={
             <ProtectedRoute>
               <Layout>
@@ -38,6 +42,8 @@ export default function App() {
                   <Route path="/wallet" element={<WalletPage />} />
                   <Route path="/profile" element={<Profile />} />
                   <Route path="/qr" element={<QRPayment />} />
+                  <Route path="/set-pin" element={<SetUpiPin />} />
+                  <Route path="/sessions" element={<Sessions />} />
                   <Route path="*" element={<NotFound />} />
                 </Routes>
               </Layout>

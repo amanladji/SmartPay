@@ -35,19 +35,14 @@ public class TransactionService {
         Page<Transaction> transactionPage;
 
         if (type != null && !type.isEmpty()) {
-            if (type.equalsIgnoreCase("CREDIT")) {
-                transactionPage = transactionRepository
-                        .findByReceiverUpiIdAndTypeOrderByCreatedAtDesc(
-                                user.getUpiId(), "CREDIT", pageable);
-            } else {
-                transactionPage = transactionRepository
-                        .findBySenderUpiIdAndTypeOrderByCreatedAtDesc(
-                                user.getUpiId(), "DEBIT", pageable);
-            }
+            String t = type.equalsIgnoreCase("CREDIT") ? "CREDIT" : "DEBIT";
+            transactionPage = transactionRepository
+                    .findBySenderUpiIdAndTypeOrderByCreatedAtDesc(
+                            user.getUpiId(), t, pageable);
         } else {
             transactionPage = transactionRepository
-                    .findBySenderUpiIdOrReceiverUpiIdOrderByCreatedAtDesc(
-                            user.getUpiId(), user.getUpiId(), pageable);
+                    .findBySenderUpiIdOrderByCreatedAtDesc(
+                            user.getUpiId(), pageable);
         }
 
         List<TransactionResponse> content = transactionPage.getContent().stream()
@@ -70,7 +65,7 @@ public class TransactionService {
         List<Transaction> sentTxns = transactionRepository
                 .findBySenderUpiIdAndTypeAndStatus(user.getUpiId(), "DEBIT", "SUCCESS");
         List<Transaction> receivedTxns = transactionRepository
-                .findByReceiverUpiIdAndTypeAndStatus(user.getUpiId(), "CREDIT", "SUCCESS");
+                .findBySenderUpiIdAndTypeAndStatus(user.getUpiId(), "CREDIT", "SUCCESS");
 
         BigDecimal totalSent = sentTxns.stream()
                 .map(Transaction::getAmount)

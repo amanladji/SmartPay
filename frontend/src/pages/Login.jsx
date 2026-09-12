@@ -3,6 +3,15 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import toast from 'react-hot-toast';
 
+function getDeviceId() {
+  let deviceId = localStorage.getItem('deviceId');
+  if (!deviceId) {
+    deviceId = 'device_' + Math.random().toString(36).substring(2, 15);
+    localStorage.setItem('deviceId', deviceId);
+  }
+  return deviceId;
+}
+
 export default function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -14,7 +23,11 @@ export default function Login() {
     e.preventDefault();
     setLoading(true);
     try {
-      await login(email, password);
+      const res = await login(email, password, getDeviceId(), navigator.userAgent || 'Unknown Device');
+      if (res?.requiresOtp) {
+        navigate('/verify-otp', { state: { email, otp: res.otp, deviceId: getDeviceId(), deviceName: navigator.userAgent || 'Unknown Device' } });
+        return;
+      }
       toast.success('Welcome back!', { className: 'toast-success' });
       navigate('/');
     } catch (err) {

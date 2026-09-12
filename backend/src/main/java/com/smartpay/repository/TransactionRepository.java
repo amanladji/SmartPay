@@ -8,8 +8,8 @@ import org.springframework.data.mongodb.repository.MongoRepository;
 import java.util.List;
 
 public interface TransactionRepository extends MongoRepository<Transaction, String> {
-    Page<Transaction> findBySenderUpiIdOrReceiverUpiIdOrderByCreatedAtDesc(
-            String senderUpiId, String receiverUpiId, Pageable pageable);
+    Page<Transaction> findBySenderUpiIdOrderByCreatedAtDesc(
+            String senderUpiId, Pageable pageable);
 
     Page<Transaction> findBySenderUpiIdAndTypeOrderByCreatedAtDesc(
             String senderUpiId, String type, Pageable pageable);

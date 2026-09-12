@@ -17,4 +17,7 @@ public class TransferRequest {
     private BigDecimal amount;
 
     private String description;
+
+    @NotBlank(message = "UPI PIN is required")
+    private String upiPin;
 }

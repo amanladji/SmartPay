@@ -9,6 +9,10 @@ import lombok.Data;
 @AllArgsConstructor
 public class AuthResponse {
     private String token;
+    private String refreshToken;
     private String message;
     private long expiresIn;
+    private boolean pinSet;
+    private boolean requiresOtp;
+    private String otp;
 }

@@ -1,7 +1,9 @@
 package com.smartpay.controller;
 
 import com.smartpay.dto.request.LoginRequest;
+import com.smartpay.dto.request.RefreshTokenRequest;
 import com.smartpay.dto.request.RegisterRequest;
+import com.smartpay.dto.request.VerifyOtpRequest;
 import com.smartpay.dto.response.ApiResponse;
 import com.smartpay.dto.response.AuthResponse;
 import com.smartpay.service.AuthService;
@@ -31,6 +33,18 @@ public class AuthController {
     @PostMapping("/login")
     public ResponseEntity<ApiResponse<AuthResponse>> login(@Valid @RequestBody LoginRequest request) {
         AuthResponse response = authService.login(request);
+        return ResponseEntity.ok(ApiResponse.success(response.getMessage(), response));
+    }
+
+    @PostMapping("/refresh")
+    public ResponseEntity<ApiResponse<AuthResponse>> refresh(@Valid @RequestBody RefreshTokenRequest request) {
+        AuthResponse response = authService.refresh(request);
+        return ResponseEntity.ok(ApiResponse.success(response.getMessage(), response));
+    }
+
+    @PostMapping("/verify-otp")
+    public ResponseEntity<ApiResponse<AuthResponse>> verifyOtp(@Valid @RequestBody VerifyOtpRequest request) {
+        AuthResponse response = authService.verifyOtpAndLogin(request);
         return ResponseEntity.ok(ApiResponse.success(response.getMessage(), response));
     }
 }

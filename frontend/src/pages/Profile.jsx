@@ -1,8 +1,9 @@
+import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { User, Mail, Phone, CreditCard, Calendar } from 'lucide-react';
+import { User, Mail, Phone, CreditCard, Calendar, ShieldCheck, ShieldOff, Monitor } from 'lucide-react';
 
 export default function Profile() {
-  const { user } = useAuth();
+  const { user, pinSet } = useAuth();
 
   const details = [
     { icon: User, label: 'Name', value: user?.name },
@@ -44,6 +45,35 @@ export default function Profile() {
             </div>
           );
         })}
+        <div style={{
+          display: 'flex', alignItems: 'center', gap: 16,
+          padding: '16px 0', borderBottom: '1px solid var(--color-fog)',
+        }}>
+          {pinSet ? <ShieldCheck size={20} style={{ color: 'var(--color-success)', flexShrink: 0 }} />
+            : <ShieldOff size={20} style={{ color: 'var(--color-error)', flexShrink: 0 }} />}
+          <div style={{ flex: 1 }}>
+            <p className="body-small" style={{ color: 'var(--color-ash)' }}>UPI PIN</p>
+            <p className="body-text" style={{ fontWeight: 500 }}>
+              {pinSet ? 'PIN is set' : 'Not set'}
+            </p>
+          </div>
+          <Link to="/set-pin" className="ghost-pill ghost-pill--dark" style={{ fontSize: 12, padding: '6px 16px', textDecoration: 'none' }}>
+            {pinSet ? 'Change' : 'Set PIN'}
+          </Link>
+        </div>
+        <div style={{
+          display: 'flex', alignItems: 'center', gap: 16,
+          padding: '16px 0',
+        }}>
+          <Monitor size={20} style={{ color: 'var(--color-ash)', flexShrink: 0 }} />
+          <div style={{ flex: 1 }}>
+            <p className="body-small" style={{ color: 'var(--color-ash)' }}>Active Sessions</p>
+            <p className="body-text" style={{ fontWeight: 500 }}>Manage logged-in devices</p>
+          </div>
+          <Link to="/sessions" className="ghost-pill ghost-pill--dark" style={{ fontSize: 12, padding: '6px 16px', textDecoration: 'none' }}>
+            View
+          </Link>
+        </div>
       </div>
     </div>
   );

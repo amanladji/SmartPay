@@ -3,6 +3,15 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import toast from 'react-hot-toast';
 
+function getDeviceId() {
+  let deviceId = localStorage.getItem('deviceId');
+  if (!deviceId) {
+    deviceId = 'device_' + Math.random().toString(36).substring(2, 15);
+    localStorage.setItem('deviceId', deviceId);
+  }
+  return deviceId;
+}
+
 export default function Register() {
   const [form, setForm] = useState({ name: '', email: '', phone: '', password: '', confirmPassword: '' });
   const [loading, setLoading] = useState(false);
@@ -23,7 +32,7 @@ export default function Register() {
     }
     setLoading(true);
     try {
-      const res = await register(form.name, form.email, form.phone, form.password);
+      const res = await register(form.name, form.email, form.phone, form.password, getDeviceId(), navigator.userAgent || 'Unknown Device');
       toast.success(res.message || 'Registration successful!', { className: 'toast-success' });
       navigate('/');
     } catch (err) {

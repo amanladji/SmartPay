@@ -61,6 +61,12 @@ public class GlobalExceptionHandler {
                         .build());
     }
 
+    @ExceptionHandler(InvalidPinException.class)
+    public ResponseEntity<ApiResponse<Void>> handleInvalidPin(InvalidPinException ex) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(ApiResponse.error(ex.getMessage()));
+    }
+
     @ExceptionHandler(IllegalArgumentException.class)
     public ResponseEntity<ApiResponse<Void>> handleIllegalArgument(IllegalArgumentException ex) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
