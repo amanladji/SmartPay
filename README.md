@@ -284,6 +284,6 @@ docker run -p 8765:8765 --env-file backend/.env smartpay
 
 PRs welcome. Keep feature tracking in `FEATURES.md` (add block per feature for undo). Run `mvn test` + relevant `test-*.ps1` before pushing.
 
----
+----
 
 Built for learning/demo — not a real payment network.
